@@ -13,7 +13,7 @@ import qualified Data.Text.Encoding as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
 
-import Text.FastAleck (FastAleckConfig (..))
+import Text.FastAleck (FastAleckConfig, defaultFastAleckConfig)
 import qualified Text.FastAleck.ByteString as B
 import qualified Text.FastAleck.ByteString.Lazy as BL
 import qualified Text.FastAleck.Text as T
@@ -32,7 +32,7 @@ fastAleckTest e i = do
     assertEqual "Text.Lazy"       e $ fa (fromString i :: TL.Text)
   where
     fa :: FastAleckString a => a -> String
-    fa = toString . fastAleck (FastAleckConfig False False)
+    fa = toString . fastAleck defaultFastAleckConfig
 
 class FastAleckString a where
     fromString :: String -> a

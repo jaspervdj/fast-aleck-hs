@@ -16,10 +16,10 @@ Library
   Include-dirs:   fast-aleck/include
 
   C-sources:
-    cbits/fast-aleck.c
+    cbits/fast-aleck-wrapper.c
     fast-aleck/src/fast-aleck/fast-aleck.c
 
-  Exposed-modules:     
+  Exposed-modules:
     Text.FastAleck
     Text.FastAleck.ByteString
     Text.FastAleck.ByteString.Lazy

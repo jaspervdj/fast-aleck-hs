@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP, ForeignFunctionInterface #-}
 module Text.FastAleck.Internal
     ( FastAleckConfig (..)
+    , defaultFastAleckConfig
     , fastAleck
     ) where
 
@@ -13,6 +14,13 @@ import Data.ByteString (ByteString)
 import qualified Data.ByteString.Internal as BI
 
 #include <fast-aleck/fast-aleck.h>
+        
+toFaBool :: CChar -> Bool
+toFaBool = (/= 0)
+
+fromFaBool :: Bool -> CChar
+fromFaBool True  = 1
+fromFaBool False = 0
 
 data FastAleckConfig = FastAleckConfig
     { wrapAmps   :: Bool
@@ -30,15 +38,18 @@ instance Storable FastAleckConfig where
         #{poke fast_aleck_config, wrap_amps} p   $ fromFaBool $ wrapAmps fac
         #{poke fast_aleck_config, wrap_quotes} p $ fromFaBool $ wrapQuotes fac
 
-foreign import ccall unsafe "fast_aleck_" fast_aleck
-    :: Ptr FastAleckConfig -> Ptr CChar -> CSize -> Ptr CSize -> IO (Ptr CChar)
-        
-toFaBool :: CChar -> Bool
-toFaBool = (/= 0)
+foreign import ccall unsafe "init_fast_aleck_config" init_fast_aleck_config
+    :: Ptr FastAleckConfig -> IO ()
 
-fromFaBool :: Bool -> CChar
-fromFaBool True  = 1
-fromFaBool False = 0
+defaultFastAleckConfig :: FastAleckConfig
+defaultFastAleckConfig = unsafePerformIO $ do
+    fptr <- mallocForeignPtr
+    withForeignPtr fptr $ \ptr -> do
+        init_fast_aleck_config ptr
+        peek ptr
+
+foreign import ccall unsafe "fast_aleck_wrapper" fast_aleck
+    :: Ptr FastAleckConfig -> Ptr CChar -> CSize -> Ptr CSize -> IO (Ptr CChar)
 
 fastAleck :: FastAleckConfig -> ByteString -> ByteString
 fastAleck config bs = unsafePerformIO $
