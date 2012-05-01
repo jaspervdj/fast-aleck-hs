@@ -30,8 +30,8 @@ instance Storable FastAleckConfig where
         #{poke fast_aleck_config, wrap_amps} p   $ fromFaBool $ wrapAmps fac
         #{poke fast_aleck_config, wrap_quotes} p $ fromFaBool $ wrapQuotes fac
 
-foreign import ccall unsafe "fast_aleck_"
-    fast_aleck :: Ptr FastAleckConfig -> Ptr CChar -> CSize -> IO (Ptr CChar)
+foreign import ccall unsafe "fast_aleck_" fast_aleck
+    :: Ptr FastAleckConfig -> Ptr CChar -> CSize -> Ptr CSize -> IO (Ptr CChar)
         
 toFaBool :: CChar -> Bool
 toFaBool = (/= 0)
@@ -42,14 +42,15 @@ fromFaBool False = 0
 
 fastAleck :: FastAleckConfig -> ByteString -> ByteString
 fastAleck config bs = unsafePerformIO $
-    with config $ \configp -> do
-        withForeignPtr str_fptr $ \str_ptr -> do
-            let str     = castPtr $ str_ptr `plusPtr` offset
-                str_len = fromIntegral len
-            out_ptr  <- fast_aleck configp str str_len
-            out_len  <- BI.c_strlen out_ptr
-            out_fptr <- newForeignPtr BI.c_free_finalizer $ castPtr out_ptr
+    with config $ \configp ->
+        with 0 $ \out_len_ptr ->
+            withForeignPtr str_fptr $ \str_ptr -> do
+                let str     = castPtr $ str_ptr `plusPtr` offset
+                    str_len = fromIntegral len
+                out_ptr  <- fast_aleck configp str str_len out_len_ptr
+                out_len  <- peek out_len_ptr
+                out_fptr <- newForeignPtr BI.c_free_finalizer $ castPtr out_ptr
 
-            return $ BI.fromForeignPtr out_fptr 0 (fromIntegral out_len)
+                return $ BI.fromForeignPtr out_fptr 0 (fromIntegral out_len)
   where
     (str_fptr, offset, len) = BI.toForeignPtr bs
