@@ -1,0 +1,30 @@
+Name:          fast-aleck
+Version:       0.0.0.1
+Synopsis:      Bindings to fast-aleck, a smart typography enhancer
+Homepage:      http://github.com/jaspervdj/fast-aleck-hs
+License:       BSD3
+License-file:  LICENSE
+Author:        Jasper Van der Jeugt <m@jaspervdj.be>
+Maintainer:    Jasper Van der Jeugt <m@jaspervdj.be>
+Category:      Text
+Build-type:    Simple
+Cabal-version: >= 1.8
+
+Library
+  Ghc-options:    -Wall
+  Hs-source-dirs: src
+  Include-dirs:   fast-aleck/include
+
+  C-sources:
+    cbits/fast-aleck.c
+    fast-aleck/src/fast-aleck/fast-aleck.c
+
+  Exposed-modules:     
+    Text.FastAleck
+
+  Other-modules:
+    Text.FastAleck.Internal
+
+  Build-depends:
+    base       >= 4   && < 5,
+    bytestring >= 0.9 && < 0.10

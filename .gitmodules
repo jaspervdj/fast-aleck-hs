@@ -1,0 +1,3 @@
+[submodule "fast-aleck"]
+	path = fast-aleck
+	url = https://github.com/ddfreyne/fast-aleck.git
