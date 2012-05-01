@@ -1,6 +1,14 @@
-Name:          fast-aleck
-Version:       0.0.0.1
-Synopsis:      Bindings to fast-aleck, a smart typography enhancer
+Name:     fast-aleck
+Version:  0.0.0.1
+Synopsis: Bindings to fast-aleck, a smart typography enhancer
+
+Description:
+  Haskell bindings to the fast-aleck library:
+
+  .
+
+  <https://github.com/ddfreyne/fast-aleck>
+
 Homepage:      http://github.com/jaspervdj/fast-aleck-hs
 License:       BSD3
 License-file:  LICENSE

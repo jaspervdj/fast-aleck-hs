@@ -7,7 +7,7 @@ module Text.FastAleck.Internal
 
 import Control.Applicative ((<$>))
 import Foreign hiding (unsafePerformIO)
-import Foreign.C.Types
+import Foreign.C.Types (CChar, CSize (..))
 import System.IO.Unsafe (unsafePerformIO)
 
 import Data.ByteString (ByteString)
@@ -24,6 +24,7 @@ fromFaBool True  = 1
 fromFaBool False = 0
 {-# INLINE fromFaBool #-}
 
+-- | Configuration for the fast-aleck library
 data FastAleckConfig = FastAleckConfig
     { wrapAmps   :: Bool
     , wrapQuotes :: Bool
