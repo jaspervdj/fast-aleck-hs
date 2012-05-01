@@ -40,14 +40,14 @@ instance Storable FastAleckConfig where
         #{poke fast_aleck_config, wrap_amps} p   $ fromFaBool $ wrapAmps fac
         #{poke fast_aleck_config, wrap_quotes} p $ fromFaBool $ wrapQuotes fac
 
-foreign import ccall unsafe "init_fast_aleck_config" init_fast_aleck_config
+foreign import ccall unsafe "fast_aleck_config_init" fast_aleck_config_init
     :: Ptr FastAleckConfig -> IO ()
 
 defaultFastAleckConfig :: FastAleckConfig
 defaultFastAleckConfig = unsafePerformIO $ do
     fptr <- mallocForeignPtr
     withForeignPtr fptr $ \ptr -> do
-        init_fast_aleck_config ptr
+        fast_aleck_config_init ptr
         peek ptr
 
 foreign import ccall unsafe "fast_aleck_wrapper" fast_aleck
