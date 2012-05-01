@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Text.FastAleck.Tests
     ( tests
     ) where
@@ -16,6 +17,7 @@ import qualified Data.Text.Lazy.Encoding as TL
 import Text.FastAleck (FastAleckConfig, defaultFastAleckConfig)
 import qualified Text.FastAleck.ByteString as B
 import qualified Text.FastAleck.ByteString.Lazy as BL
+import qualified Text.FastAleck.String as S
 import qualified Text.FastAleck.Text as T
 import qualified Text.FastAleck.Text.Lazy as TL
 
@@ -28,6 +30,7 @@ fastAleckTest :: String -> String -> Assertion
 fastAleckTest e i = do
     assertEqual "ByteString"      e $ fa (fromString i :: B.ByteString)
     assertEqual "ByteString.Lazy" e $ fa (fromString i :: BL.ByteString)
+    assertEqual "String"          e $ fa (fromString i :: String)
     assertEqual "Text"            e $ fa (fromString i :: T.Text)
     assertEqual "Text.Lazy"       e $ fa (fromString i :: TL.Text)
   where
@@ -48,6 +51,11 @@ instance FastAleckString BL.ByteString where
     fromString = TL.encodeUtf8 . TL.pack
     toString   = TL.unpack . TL.decodeUtf8
     fastAleck  = BL.fastAleck
+
+instance FastAleckString [Char] where
+    fromString = id
+    toString   = id
+    fastAleck  = S.fastAleck
 
 instance FastAleckString T.Text where
     fromString = T.pack

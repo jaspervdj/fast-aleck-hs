@@ -23,6 +23,7 @@ Library
     Text.FastAleck
     Text.FastAleck.ByteString
     Text.FastAleck.ByteString.Lazy
+    Text.FastAleck.String
     Text.FastAleck.Text
     Text.FastAleck.Text.Lazy
 

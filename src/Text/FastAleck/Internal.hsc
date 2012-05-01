@@ -17,10 +17,12 @@ import qualified Data.ByteString.Internal as BI
         
 toFaBool :: CChar -> Bool
 toFaBool = (/= 0)
+{-# INLINE toFaBool #-}
 
 fromFaBool :: Bool -> CChar
 fromFaBool True  = 1
 fromFaBool False = 0
+{-# INLINE fromFaBool #-}
 
 data FastAleckConfig = FastAleckConfig
     { wrapAmps   :: Bool
@@ -65,3 +67,4 @@ fastAleck config bs = unsafePerformIO $
                 return $ BI.fromForeignPtr out_fptr 0 (fromIntegral out_len)
   where
     (str_fptr, offset, len) = BI.toForeignPtr bs
+{-# INLINE fastAleck #-}

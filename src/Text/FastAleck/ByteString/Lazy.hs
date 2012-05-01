@@ -10,3 +10,4 @@ import qualified Text.FastAleck.Internal as I
 
 fastAleck :: FastAleckConfig -> BL.ByteString -> BL.ByteString
 fastAleck config = BL.fromChunks . map (I.fastAleck config) . BL.toChunks
+{-# INLINE fastAleck #-}
