@@ -3,5 +3,7 @@ module Text.FastAleck.ByteString
     , fastAleck
     ) where
 
-import Text.FastAleck
-import Text.FastAleck.Internal
+
+--------------------------------------------------------------------------------
+import           Text.FastAleck
+import           Text.FastAleck.Internal

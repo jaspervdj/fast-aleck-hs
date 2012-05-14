@@ -5,25 +5,34 @@ module Text.FastAleck.Internal
     , fastAleck
     ) where
 
-import Control.Applicative ((<$>))
-import Foreign hiding (unsafePerformIO)
-import Foreign.C.Types (CChar, CSize (..))
-import System.IO.Unsafe (unsafePerformIO)
 
-import Data.ByteString (ByteString)
+--------------------------------------------------------------------------------
+import           Control.Applicative      ((<$>))
+import           Data.ByteString          (ByteString)
 import qualified Data.ByteString.Internal as BI
+import           Foreign                  hiding (unsafePerformIO)
+import           Foreign.C.Types          (CChar, CSize (..))
+import           System.IO.Unsafe         (unsafePerformIO)
 
+
+--------------------------------------------------------------------------------
 #include <fast-aleck/fast-aleck.h>
         
+
+--------------------------------------------------------------------------------
 toFaBool :: CChar -> Bool
 toFaBool = (/= 0)
 {-# INLINE toFaBool #-}
 
+
+--------------------------------------------------------------------------------
 fromFaBool :: Bool -> CChar
 fromFaBool True  = 1
 fromFaBool False = 0
 {-# INLINE fromFaBool #-}
 
+
+--------------------------------------------------------------------------------
 -- | Configuration for the fast-aleck library
 data FastAleckConfig = FastAleckConfig
     { wrapAmps   :: Bool
@@ -32,6 +41,8 @@ data FastAleckConfig = FastAleckConfig
     , widont     :: Bool
     } deriving (Show)
 
+
+--------------------------------------------------------------------------------
 instance Storable FastAleckConfig where
     sizeOf _     = #{size fast_aleck_config}
     alignment _  = 1
@@ -47,9 +58,13 @@ instance Storable FastAleckConfig where
         #{poke fast_aleck_config, wrap_quotes} p $ fromFaBool $ wrapQuotes fac
         #{poke fast_aleck_config, widont}      p $ fromFaBool $ widont fac
 
+
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "fast_aleck_config_init" fast_aleck_config_init
     :: Ptr FastAleckConfig -> IO ()
 
+
+--------------------------------------------------------------------------------
 defaultFastAleckConfig :: FastAleckConfig
 defaultFastAleckConfig = unsafePerformIO $ do
     fptr <- mallocForeignPtr
@@ -57,9 +72,13 @@ defaultFastAleckConfig = unsafePerformIO $ do
         fast_aleck_config_init ptr
         peek ptr
 
+
+--------------------------------------------------------------------------------
 foreign import ccall unsafe "fast_aleck_wrapper" fast_aleck
     :: Ptr FastAleckConfig -> Ptr CChar -> CSize -> Ptr CSize -> IO (Ptr CChar)
 
+
+--------------------------------------------------------------------------------
 fastAleck :: FastAleckConfig -> ByteString -> ByteString
 fastAleck config bs = unsafePerformIO $
     with config $ \configp ->

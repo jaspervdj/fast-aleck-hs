@@ -3,4 +3,6 @@ module Text.FastAleck
     , defaultFastAleckConfig
     ) where
 
+
+--------------------------------------------------------------------------------
 import Text.FastAleck.Internal
